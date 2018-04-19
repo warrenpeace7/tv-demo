@@ -7,7 +7,14 @@ export default class ManageShows extends Component {
             name: "",
             rating: -1,
             image: "",
-        }
+        },
+        shows: [
+            {
+                name: 'Game of Thrones',
+                rating: 5,
+                image: 'http://bronlea.com/wp-content/uploads/2017/10/2742670-game-768x384.jpg'
+            }
+        ]
 
 
     }
@@ -23,7 +30,7 @@ export default class ManageShows extends Component {
 
         else if (event.target.id === "ratingInput") {
             this.setState({
-                newShowRating: event.target.value
+                newShowRating: Number(event.target.value)
             })
         }
 
@@ -35,18 +42,48 @@ export default class ManageShows extends Component {
         }
     }
 
-    handleOnClick = () => {
+    handleOnClick = (prev) => {
         this.setState((previousState) => {
+            const existingShows = previousState.shows
+            existingShows.push({
+                name: previousState.newShowName,
+                rating: previousState.newShowRating,
+                image: previousState.newShowImage,
+            })
             return {
-                show: {
-                    name: previousState.newShowName,
-                    rating: previousState.newShowRating,
-                    image: previousState.newShowImage,
-                }
+                shows: existingShows
             }
         })
     }
 
+    renderShows = () => {
+        // const showComponents = []
+
+        // for (const show of this.state.shows) {
+        // showComponents.push(
+        // <Show key={0} name={show.name} rating={show.rating} previewImage={show.image} />
+        // )
+        // }
+    //     for (let i = 0; i < this.state.shows.length; i++) {
+    //         const show = this.state.shows[i];
+
+    //         showComponents.push(
+    //             <Show key={i} name={show.name} rating={show.rating} previewImage={show.image} />
+    //         )
+
+    //     }
+
+    //     return showComponents
+
+
+        return this.state.shows.map((show, i) => {
+            return(
+               <Show key={i} name={show.name} rating={show.rating} previewImage={show.image} />
+
+
+            )
+        })
+    }
 
 
     render() {
@@ -56,9 +93,7 @@ export default class ManageShows extends Component {
                 <section className="viewAllShows">
                     <header><h1>All Shows</h1></header>
                     <div>
-                        <Show name={this.state.show.name} rating={this.state.show.rating} previewImage={this.state.show.image} />
-                        {/* <Show name="Show Name"/> */}
-
+                        {this.renderShows()}
                     </div>
                 </section>
                 <section className="createShow">
