@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
+import ReactPropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import Show from '../Show'
+import './ManageShows.css'
 
 export default class ManageShows extends Component {
+    static propTypes = {
+        createShow: ReactPropTypes.func.isRequired
+    }
+
     state = {
         show: {
             name: "",
@@ -43,16 +50,10 @@ export default class ManageShows extends Component {
     }
 
     handleOnClick = (prev) => {
-        this.setState((previousState) => {
-            const existingShows = previousState.shows
-            existingShows.push({
-                name: previousState.newShowName,
-                rating: previousState.newShowRating,
-                image: previousState.newShowImage,
-            })
-            return {
-                shows: existingShows
-            }
+        this.props.createShow({
+            name: this.state.newShowName,
+            rating: this.state.newShowRating,
+            image: this.state.newShowImage,
         })
     }
 
@@ -64,21 +65,21 @@ export default class ManageShows extends Component {
         // <Show key={0} name={show.name} rating={show.rating} previewImage={show.image} />
         // )
         // }
-    //     for (let i = 0; i < this.state.shows.length; i++) {
-    //         const show = this.state.shows[i];
+        //     for (let i = 0; i < this.state.shows.length; i++) {
+        //         const show = this.state.shows[i];
 
-    //         showComponents.push(
-    //             <Show key={i} name={show.name} rating={show.rating} previewImage={show.image} />
-    //         )
+        //         showComponents.push(
+        //             <Show key={i} name={show.name} rating={show.rating} previewImage={show.image} />
+        //         )
 
-    //     }
+        //     }
 
-    //     return showComponents
+        //     return showComponents
 
 
-        return this.state.shows.map((show, i) => {
-            return(
-               <Show key={i} name={show.name} rating={show.rating} previewImage={show.image} />
+        return this.props.allShows.map((show, i) => {
+            return (
+                <Show key={i} name={show.name} rating={show.rating} image={show.image} />
 
 
             )
@@ -89,12 +90,13 @@ export default class ManageShows extends Component {
     render() {
         console.log(this.state)
         return (
-            <div>
+            <div className="manageShows">
                 <section className="viewAllShows">
                     <header><h1>All Shows</h1></header>
                     <div>
                         {this.renderShows()}
                     </div>
+                    <Link to="/">View Shows</Link>
                 </section>
                 <section className="createShow">
                     <header><h1>New Show</h1></header>
