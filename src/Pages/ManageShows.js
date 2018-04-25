@@ -86,13 +86,23 @@ export default class ManageShows extends Component {
         })
     }
 
+    getAvgRating = () => {
+        const sumOfRatings = this.props.allShows.reduce((accumulator, show)=>{
+            return show.rating + accumulator
+        }, 0)
+        
+        return sumOfRatings / this.props.allShows.length
+    }
+
 
     render() {
         console.log(this.state)
         return (
             <div className="manageShows">
                 <section className="viewAllShows">
-                    <header><h1>All Shows</h1></header>
+                    <header><h1>All Shows</h1>
+                    <p>Avg Rating: {this.getAvgRating()}</p>
+                    </header>
                     <div>
                         {this.renderShows()}
                     </div>
