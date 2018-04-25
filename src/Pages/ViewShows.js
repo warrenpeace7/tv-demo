@@ -13,24 +13,28 @@ export default class ViewShows extends Component {
         shows: []
     }
     renderShows = () => {
-        return this.props.allShows.map((show) => {
-            return <Show name={show.name} rating={show.rating} image={show.image}/>
-
+        const wholesome = this.props.allShows.filter((number) => {
+            return (number.rating <= 3) && number.rating >= 1
         })
+        return wholesome.map((show, i)=> {
+            return <Show key={i} name={show.name} rating={show.rating} image={show.image} />
+        }
+    )
+
     }
 
 
     render() {
-            return (
-                <main className="viewShows">
-                    <section className="availableShows">
-                        <header><h3>Available Shows</h3></header>
-                        {this.renderShows()}
-                        <Link to="/manageShows">Manage Shows</Link>
-                    </section>
-                    <section className="currentShow">
-                    </section>
-                </main>
-            )
+        return (
+            <main className="viewShows">
+                <section className="availableShows">
+                    <header><h3>Available Shows</h3></header>
+                    {this.renderShows()}
+                    <Link to="/manageShows">Manage Shows</Link>
+                </section>
+                <section className="currentShow">
+                </section>
+            </main>
+        )
     }
 }

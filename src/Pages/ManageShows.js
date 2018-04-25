@@ -20,10 +20,10 @@ export default class ManageShows extends Component {
                 name: 'Game of Thrones',
                 rating: 5,
                 image: 'http://bronlea.com/wp-content/uploads/2017/10/2742670-game-768x384.jpg'
+
             }
+     
         ]
-
-
     }
 
 
