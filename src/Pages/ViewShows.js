@@ -13,8 +13,8 @@ export default class ViewShows extends Component {
         shows: []
     }
     renderShows = () => {
-        const wholesome = this.props.allShows.filter((number) => {
-            return (number.rating <= 3) && number.rating >= 1
+        const wholesome = this.props.allShows.filter((show) => {
+            return (show.rating <= 3) && show.rating >= 1
         })
         return wholesome.map((show, i)=> {
             return <Show key={i} name={show.name} rating={show.rating} image={show.image} />

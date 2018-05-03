@@ -50,11 +50,13 @@ export default class ManageShows extends Component {
     }
 
     handleOnClick = (prev) => {
-        this.props.createShow({
+       const showToAdd = {
             name: this.state.newShowName,
             rating: this.state.newShowRating,
             image: this.state.newShowImage,
-        })
+        }
+        this.props.createShow(showToAdd)
+        console.log ('Here it is', showToAdd)
     }
 
     renderShows = () => {
@@ -113,7 +115,6 @@ export default class ManageShows extends Component {
 
 
     render() {
-        console.log(this.state)
         return (
             <div className="manageShows">
                 <section className="viewAllShows">

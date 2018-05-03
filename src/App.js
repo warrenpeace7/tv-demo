@@ -7,40 +7,92 @@ import './App.css';
 
 class App extends Component {
   state = {
-    shows: [
-      {
-        name: 'Game of Thrones',
-        rating: 5,
-        image: 'http://bronlea.com/wp-content/uploads/2017/10/2742670-game-768x384.jpg'
-      },
-      {
-        name: 'Friends',
-        rating: 3,
-        image: 'https://tvseriesfinale.com/wp-content/uploads/2015/11/Friends-TV-show-on-NBC-canceled-no-season-11-590x332.jpg'
-      },
-      {
-        name: 'Friends',
-        rating: 2,
-        image: 'https://tvseriesfinale.com/wp-content/uploads/2015/11/Friends-TV-show-on-NBC-canceled-no-season-11-590x332.jpg'
-      }
-    ]
+    shows: []
   }
+
+componentWillMount() {
+  this.getShows()
+}
+
   createShow = (show) => {
-    this.setState((previousState) => {
-      const existingShows = previousState.shows
-      existingShows.push(show)
-      return {
-        shows: existingShows
-      }
+    this.postShow(show)
+    // this.setState((previousState) => {
+    //   const existingShows = previousState.shows
+    //   existingShows.push(show)
+    //   return {
+    //     shows: existingShows
+    //   }
+    // })
+  }
+
+
+
+  testPromises = () => {
+    console.log('testing some promises')
+    new Promise((resolve, reject) => {
+      const success = true
+      const successMessage = 'promise was successful'
+      const errorMessage = 'promise failed epically'
+      setTimeout(() => {
+        if (success)
+          resolve(successMessage)
+        else
+          reject(errorMessage)
+      }, 5000)
     })
   }
 
+  getShows = () => {
+   
+    fetch('http://localhost:3001/shows')
+      .then((response) => {
+        console.log("response:", response)
+        return response.json()
+      })
+      .then((shows) => {
+        console.log("jsonData:", shows)
+        this.setState({ shows })
+      })
+      .catch((error) => {
+        console.log(error, 'also error')
+      })
+  }
 
+  postShow = (showToSave) => {
+    console.log('here')
+    const postInit = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(showToSave),
+    }
+    fetch('http://localhost:3001/shows', postInit)
+      .then((postShowsResponse) => {
+        return postShowsResponse.json()
+      })
+      .then((show) => {
+        this.setState({
+          shows: [...this.state.shows, show]
+      })
+    })
+      .catch((error) => {
+        this.setState({ errorMessage: error.message })
+      })
+  }
+
+  renderError = () => {
+    return this.state.errorMessage
+    ? (<div>{this.state.errorMessage}</div>)
+    : (<div></div>)
+  }
 
   render() {
     return (
       <Router>
         <div className="App">
+          {this.renderError()}
           <Switch>
             <Route exact path="/" component={() => <ViewShows allShows={this.state.shows} />} />
             <Route path="/manageShows" component={() => <ManageShows allShows={this.state.shows} createShow={this.createShow} />} />
