@@ -10,19 +10,18 @@ class App extends Component {
     shows: []
   }
 
-componentWillMount() {
-  this.getShows()
-}
+  componentWillMount() {
+    this.getShows()
+  }
 
   createShow = (show) => {
-    this.postShow(show)
-    // this.setState((previousState) => {
-    //   const existingShows = previousState.shows
-    //   existingShows.push(show)
-    //   return {
-    //     shows: existingShows
-    //   }
-    // })
+    this.setState((previousState) => {
+      const existingShows = previousState.shows
+      existingShows.push(show)
+      return {
+        shows: existingShows
+      }
+    })
   }
 
 
@@ -42,23 +41,17 @@ componentWillMount() {
     })
   }
 
-  getShows = () => {
-   
-    fetch('http://localhost:3001/shows')
-      .then((response) => {
-        console.log("response:", response)
-        return response.json()
-      })
-      .then((shows) => {
-        console.log("jsonData:", shows)
-        this.setState({ shows })
-      })
-      .catch((error) => {
-        console.log(error, 'also error')
-      })
+  getShows = async () => {
+    try {
+      const showsResponse = await fetch('http://localhost:3001/shows')
+      const shows = await showsResponse.json()
+      this.setState({ shows: shows })
+    } catch (error) {
+      this.setState({ errorMessage: error })
+    }
   }
 
-  postShow = (showToSave) => {
+  postShow = async (showToSave) => {
     console.log('here')
     const postInit = {
       method: 'POST',
@@ -68,24 +61,20 @@ componentWillMount() {
       },
       body: JSON.stringify(showToSave),
     }
-    fetch('http://localhost:3001/shows', postInit)
-      .then((postShowsResponse) => {
-        return postShowsResponse.json()
-      })
-      .then((show) => {
-        this.setState({
-          shows: [...this.state.shows, show]
-      })
-    })
-      .catch((error) => {
-        this.setState({ errorMessage: error.message })
-      })
+    try {
+      const postShowsResponse = await fetch('http://localhost:3001/shows', postInit)
+      const show = await postShowsResponse.json()
+      console.log(show)
+      this.createShow( show )
+    } catch (error) {
+      this.setState({ errorMessage: error })
+    }
   }
 
   renderError = () => {
     return this.state.errorMessage
-    ? (<div>{this.state.errorMessage}</div>)
-    : (<div></div>)
+      ? (<div>{this.state.errorMessage}</div>)
+      : (<div></div>)
   }
 
   render() {
@@ -95,7 +84,7 @@ componentWillMount() {
           {this.renderError()}
           <Switch>
             <Route exact path="/" component={() => <ViewShows allShows={this.state.shows} />} />
-            <Route path="/manageShows" component={() => <ManageShows allShows={this.state.shows} createShow={this.createShow} />} />
+            <Route path="/manageShows" component={() => <ManageShows allShows={this.state.shows} createShow={this.postShow} />} />
           </Switch>
         </div>
       </Router>
